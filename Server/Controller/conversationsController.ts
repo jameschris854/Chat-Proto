@@ -2,7 +2,7 @@ import { NextFunction ,Request ,Response } from "express"
 import Conversations from "../Model/conversationsModel"
 import Message from "../Model/messageModel"
 
-exports.getAllConversationsOfUser = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+const getAllConversationsOfUser = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
 
     const {userId} = req.params
 
@@ -26,7 +26,7 @@ exports.getAllConversationsOfUser = async (req:Request,res:Response,next:NextFun
     }
 }
 
-exports.getConversationById = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+const getConversationById = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
     const {id} = req.params
     console.log('get conv',req.params,id)
 
@@ -46,3 +46,5 @@ exports.getConversationById = async (req:Request,res:Response,next:NextFunction)
         next()
     }
 }
+
+export default {getAllConversationsOfUser ,getConversationById}

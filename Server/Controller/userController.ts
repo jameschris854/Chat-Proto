@@ -1,7 +1,7 @@
 import { NextFunction ,Response ,Request} from 'express';
 import User from '../Model/userModel';
 
-exports.getAllUsers = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+const getAllUsers = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
     let doc = {};
     try {
       doc = await User.find();
@@ -16,3 +16,5 @@ exports.getAllUsers = async (req:Request,res:Response,next:NextFunction) : Promi
       data: doc,
     });
 }
+
+export default {getAllUsers};

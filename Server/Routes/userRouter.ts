@@ -1,9 +1,9 @@
 import { Router } from "express";
 
-const express = require("express");
-const userController = require("../Controller/userController")
-const messageController = require("../Controller/messageController")
-const conversationsController = require("../Controller/conversationsController")
+import express from "express";
+import userController from "../Controller/userController";
+import messageController from "../Controller/messageController";
+import conversationsController from "../Controller/conversationsController";
 
 const router : Router = express.Router();
 

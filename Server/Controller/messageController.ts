@@ -3,7 +3,7 @@ import Conversation from "../Model/conversationsModel"
 import Users from "../Model/userModel"
 import { NextFunction ,Response ,Request } from "express"
 
-exports.sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise<void | Response> => {
+const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise<void | Response> => {
 
     let {content,senderId,recipientNo,type,source,conversationId} = req.body
 
@@ -46,3 +46,5 @@ exports.sendMessage = async (req:Request,res:Response,next:NextFunction) : Promi
         res.status(422).json({status:false,message:"could not send message"})
     }
 }
+
+export default {sendMessage};
