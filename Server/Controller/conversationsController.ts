@@ -31,7 +31,7 @@ const getConversationById = async (req:Request,res:Response,next:NextFunction) :
     console.log('get conv',req.params,id)
 
     try {
-        const doc = await Message.find({conversationId:id})
+        const doc = await Message.find({conversationId:id}).sort({updatedAt:-1})
         if(doc){
             res.status(200).json({
                 status:true,

@@ -20,11 +20,6 @@ const schema = new mongoose.Schema({
         type: SchemaTypes.String, 
         enum: ["SYSTEM", "USER", "BOT"] 
     },
-    source: { 
-        type: SchemaTypes.ObjectId, 
-        required: false, 
-        default: "" 
-    },
     conversationId: SchemaTypes.ObjectId
 }, { 
     timestamps: true 

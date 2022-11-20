@@ -5,12 +5,21 @@ import { NextFunction ,Response ,Request } from "express"
 
 const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise<void | Response> => {
 
-    let {content,senderId,recipientNo,type,source,conversationId} = req.body
+    let {content,senderId,recipientNo,recipientEmail,type,conversationId} = req.body
 
     // check if conversation already exist.
 
+    let recepientData 
 
-    let getRecipient = await Users.findOne({mobileNo:recipientNo})
+    if(recipientNo){
+        recepientData = {mobileNo: recipientNo}
+    }else if(recipientEmail) {
+        recepientData = {email: recipientEmail}
+    } else if(!conversationId){
+        res.status(403).json({status:false,message:"recipient data to correct."})
+    }
+
+    let getRecipient = await Users.findOne(recepientData)
 
     let recipientIds : any[] = []
 
@@ -26,6 +35,7 @@ const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise
         conversationId = conversation.id
     }
     let doc
+
     if(conversationId){
         doc = await Message.create({
             content,
@@ -33,7 +43,6 @@ const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise
             sender: senderId,
             recipients: [...recipientIds],
             type: type,
-            source,
             conversationId
         })
     }else{
