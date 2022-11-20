@@ -1,6 +1,7 @@
-const User = require('../Model/userModel')
+import { NextFunction ,Response ,Request} from 'express';
+import User from '../Model/userModel';
 
-exports.getAllUsers = async (req ,res ,next) => {
+exports.getAllUsers = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
     let doc = {};
     try {
       doc = await User.find();

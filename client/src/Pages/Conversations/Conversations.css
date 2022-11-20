@@ -1,0 +1,50 @@
+.conversations-wrapper{
+    display: flex;
+    flex-grow: 1;
+    background-color: rgb(255, 248, 248);
+    flex-direction: column;
+}
+
+.conversation-container{
+    display: flex;
+    background-color: rgb(247, 255, 245);
+    min-height: 50px;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 1px solid #f3f3f3;
+}
+
+.no-convo-img{
+    height: 40%;
+}
+
+.conversations-wrapper-empty{
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.conversations-wrapper-empty > span {
+    font-size: 24px;
+    font-weight: 500;
+    color: darkgrey;
+    font-family: sans-serif;
+}
+
+.convo-recipient{
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 16px;
+}
+
+.convo-content{
+    padding-left: 16px;
+}
+
+.convo-time{
+    margin-left: auto;
+    margin-right: 16px;
+}

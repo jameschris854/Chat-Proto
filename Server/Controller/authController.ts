@@ -1,10 +1,14 @@
-const User = require('../Model/userModel')
+import { NextFunction } from 'express';
+import { Response } from 'express';
+import { Request } from 'express';
+import User from '../Model/userModel'
 
-exports.signUp = async (req,res,next) => {
+type fn = (arg0: Request,arg1: Response,arg2: NextFunction) => Response
 
-  
+exports.signUp = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+
     if(req.body){
-        doc = await User.create(req.body)
+        const doc = await User.create(req.body)
         res.status(200).json({
             status:true,
             message:"user created successfully",
@@ -16,7 +20,7 @@ exports.signUp = async (req,res,next) => {
 
 }
 
-exports.login = async (req,res,next) => {
+exports.login = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
 
     const user = await User.findOne({mobileNo:req.body.mobileNo})
 

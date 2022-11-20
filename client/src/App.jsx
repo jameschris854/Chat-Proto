@@ -1,7 +1,9 @@
 import './App.css';
-import {useState} from 'react'
+import { useState } from 'react'
 import io from "socket.io-client"
-import Chat from './Chats';
+import Register from './Pages/Register/Register';
+import Home from './Pages/Home/Home';
+import Config from './config';
 
 const socket = io.connect("http://localhost:3001")
 
@@ -9,38 +11,43 @@ const socket = io.connect("http://localhost:3001")
 function App() {
 
   const [userName, setUserName] = useState("")
-  const [room, setRoom] = useState("")
+  const [mobileNo, setMobileNo] = useState("")
+  const [userId, setUserId] = useState("")
 
-  const [isRoomJoined,setIsRoomJoined] = useState(false)
+  const [isRoomJoined, setIsRoomJoined] = useState(false)
 
-  const joinRoom = () => {
-    console.log(userName,room)
-    if(userName != "" && room != ""){
-      socket.emit("join_room",{room,author:userName})
-        setIsRoomJoined(true)
+  const onSubmit = async (type) => {
+
+
+
+    const req = await fetch(`${Config.AccountsDomain}/${type}`,{
+      method:"POST",
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body:JSON.stringify({
+        mobileNo: mobileNo,
+        name: userName
+      })
+    })
+    
+    let res = await req.json()
+
+    if(res.status){
+      setUserId(res.data._id)
+      setIsRoomJoined(true)
     }
+    
   }
 
-  
+
 
   return (
     <div className="App">
-      { !isRoomJoined ? 
-        <div className="Intro-Container">
-          <h3 className="title"> Join a chat </h3>
-          <input onChange={(e) => {setUserName(e.target.value)}} type={"text"} placeholder="Name..." />
-          <input onChange={(e) => {setRoom(e.target.value)}} type={"text"} placeholder="Room ID..." />
-          
-          <div className="valorant" onClick={joinRoom}>
-            <div className="border">
-              <div className="btn4">
-                <div className="join-text">Join/Create Room</div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        : <Chat socket={socket} room={room} username={userName} />
+      {!isRoomJoined ?
+        <Register userName={userName} setUserName={setUserName} mobileNo={mobileNo} setMobileNo={setMobileNo} onSubmit={onSubmit}/>
+        : <Home  mobileNo={mobileNo} userId={userId}  name={userName} />
       }
     </div>
   );

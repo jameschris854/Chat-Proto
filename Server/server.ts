@@ -1,9 +1,7 @@
-const mongoose = require('mongoose')
-const {server} = require("./socket")
+import mongoose from 'mongoose'
+import {server} from './socket'
 
 const port = 3001
-
-
 
 const mongoDbUri = "mongodb+srv://admin:<password>@cluster0.j8rto9i.mongodb.net/chat-app?retryWrites=true&w=majority"
 

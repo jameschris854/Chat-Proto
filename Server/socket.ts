@@ -1,6 +1,6 @@
-const { Server } = require("socket.io");
-const http = require('http');
-const app = require("./app")
+import { Server } from "socket.io";
+import http from 'http';
+import app from "./app";
 
 const server = http.createServer(app);
 
@@ -11,9 +11,9 @@ const io = new Server(server,{
     }
 });
 
-let users = []
+let users : Array<any> = []
 
-const getRoomIds = async (room) => await io.in(room).fetchSockets()
+const getRoomIds = async (room: string) => await io.in(room).fetchSockets()
 
 io.on('connection', (socket) => {
 
@@ -57,4 +57,4 @@ io.on('connection', (socket) => {
 
 });
 
-module.exports = {server};
+export {server};
