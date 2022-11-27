@@ -7,10 +7,6 @@ const schema = new mongoose.Schema(
       type: mongoose.SchemaTypes.String,
       required: true,
     },
-    mobileNo: {
-      type: mongoose.SchemaTypes.Number,
-      required: true,
-    },
     friends: [],
     lastSeen: {
       type: mongoose.SchemaTypes.Mixed,

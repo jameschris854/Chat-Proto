@@ -51,11 +51,15 @@ const createSendToken = async (user, statusCode: number, res: Response) => {
  * @description creates new document in user collection and signsup new user. 
  */
 const signUp = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
-    if(req.body){
-        const doc = await User.create(req.body)
-        createSendToken(doc,201,res)
-    }else{
-        return next(new AppError("invalid request body.", 400))
+    try{
+        if(req.body){
+            const doc = await User.create(req.body)
+            createSendToken(doc,201,res)
+        }else{
+            return next(new AppError("invalid request body.", 400))
+        }
+    }catch(e){
+        return(next(new AppError(e.message,500)))
     }
 }
 
