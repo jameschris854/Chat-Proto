@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import Config from './Config/Config'
 import {server} from './socket'
 
-const port = Config.PORT
+const port = process.env.port || Config.PORT
 
 const mongoDbUri = "mongodb+srv://admin:<password>@cluster0.j8rto9i.mongodb.net/chat-app?retryWrites=true&w=majority"
 
