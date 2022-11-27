@@ -31,6 +31,7 @@ const schema = new mongoose.Schema(
       validate: {
         //This only works on CREATE AND SAVEE!!!
         validator: function (el: string) {
+          // @ts-ignore: Unreachable code error
           return el === this.password;
         },
         message: "passwords are not the same",
@@ -68,6 +69,7 @@ schema.pre('save', async function (next) {
   //Hash the password with cost of 12
   this.password = await bcrypt.hash(this.password, 12);
   //Delete the password confirm field
+  // @ts-ignore: Unreachable code error
   this.passwordConfirm = undefined;
   next();
 });

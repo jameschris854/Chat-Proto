@@ -7,7 +7,8 @@ import Config from '../Config/Config';
 import User from '../Model/userModel'
 import jwt from 'jsonwebtoken'
 import AppError from '../Utils/AppError';
-
+import IUserDoc from '../types/DBTypes';
+import IJwtPayload from '../types/IJwtPayload';
 
 /**
  * @param id 
@@ -29,7 +30,7 @@ const signToken = (id:ObjectId) => {
  * 
  * @description creates and sends jsonwebtoken with user document
  */
-const createSendToken = async (user, statusCode: number, res: Response) => {
+const createSendToken = async (user:IUserDoc, statusCode: number, res: Response) => {
     const token = signToken(user._id);    
     await User.findByIdAndUpdate(user.id,{authToken:token})
   
@@ -53,12 +54,12 @@ const createSendToken = async (user, statusCode: number, res: Response) => {
 const signUp = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
     try{
         if(req.body){
-            const doc = await User.create(req.body)
+            const doc:any= await User.create(req.body)
             createSendToken(doc,201,res)
         }else{
             return next(new AppError("invalid request body.", 400))
         }
-    }catch(e){
+    }catch(e:any){
         return(next(new AppError(e.message,500)))
     }
 }
@@ -72,7 +73,7 @@ const signUp = async (req:Request,res:Response,next:NextFunction) : Promise<void
  * @description logs in existing user and provides token in response 
  */
 const login = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
-    const user = await User.findOne({email:req.body.email}).select("+password")
+    const user:any = await User.findOne({email:req.body.email}).select("+password")
     if(user){
         let isValid = await bcrypt.compare(req.body.password,user.password)
         if(isValid){
@@ -83,7 +84,6 @@ const login = async (req:Request,res:Response,next:NextFunction) : Promise<void>
     } else {
         return next(new AppError("user does not exist, signup first!!.", 404))
     }
-
 }
 
 /**
@@ -95,7 +95,7 @@ const login = async (req:Request,res:Response,next:NextFunction) : Promise<void>
  * 
  * @description used to protect routes based on the supploed jwt token.
  */
-const protect = async (req:Request,res:Response,next:NextFunction) => {
+const protect = async (req:any,res:Response,next:NextFunction) => {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];
@@ -105,15 +105,15 @@ const protect = async (req:Request,res:Response,next:NextFunction) => {
     }
     
     try{
-        const decoded = jwt.verify(token,Config.JWT_SECRET);
-        const user = await User.findById(decoded.id).select("+authToken")
+        const decoded : any = jwt.verify(token,Config.JWT_SECRET);
+        const user: any = await User.findById(decoded.id).select("+authToken")
         if(user.authToken === token){
             req.jwtPayload = user;
             next()
         }else{
             return next(new AppError("Authentication failed ,invalid token.", 401))
         }
-    }catch(e){
+    }catch(e:any){
         return next(new AppError(e.message, 401))
     }
 }

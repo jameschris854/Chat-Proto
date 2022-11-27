@@ -1,6 +1,7 @@
 import { NextFunction ,Request ,Response } from "express"
 import Conversations from "../Model/conversationsModel"
 import Message from "../Model/messageModel"
+import { IAuthenticatedRequest } from "../types/ExpressTypes"
 import AppError from "../Utils/AppError"
 
 /**
@@ -12,8 +13,8 @@ import AppError from "../Utils/AppError"
  * 
  * @description gets all conversations of a user
  */
-const getAllConversationsOfUser = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
-    const userId = req.jwtPayload.id
+const getAllConversationsOfUser = async (req:IAuthenticatedRequest,res:Response,next:NextFunction) : Promise<void> => {
+    const userId = req?.jwtPayload?.id
     try {
         let doc = await Conversations.find({userId}).populate("recentConversations", "_id content status type createdAt updatedAt")
         if(doc){
@@ -25,8 +26,8 @@ const getAllConversationsOfUser = async (req:Request,res:Response,next:NextFunct
         }else{
             return next(new AppError("conversation not found", 404))
         }
-    } catch (error) {
-        return next(new AppError(error.message, 500))
+    } catch (e:any) {
+        return next(new AppError(e.message, 500))
     }
 }
 
@@ -40,8 +41,8 @@ const getAllConversationsOfUser = async (req:Request,res:Response,next:NextFunct
  * 
  * @description gets a conversation by conversation id.
  */
-const getConversationById = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
-    const userId = req.jwtPayload.id
+const getConversationById = async (req:IAuthenticatedRequest,res:Response,next:NextFunction) : Promise<void> => {
+    const userId = req?.jwtPayload?.id
     const {id} = req.params
     try {
         const doc = await Message.find({conversationId:id,members: {"$in": [userId]}}).sort({updatedAt:-1})
@@ -54,8 +55,8 @@ const getConversationById = async (req:Request,res:Response,next:NextFunction) :
         }else{
             return next(new AppError("conversation not found", 404))
         }
-    } catch (error) {
-        return next(new AppError(error.message, 500))
+    } catch (e:any) {
+        return next(new AppError(e?.message, 500))
     }
 }
 

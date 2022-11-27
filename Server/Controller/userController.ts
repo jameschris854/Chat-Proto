@@ -1,6 +1,7 @@
 import { NextFunction ,Response ,Request} from 'express';
 import { ObjectId } from 'mongoose';
 import User from '../Model/userModel';
+import {IAuthenticatedRequest } from '../types/ExpressTypes';
 import AppError from '../Utils/AppError';
 
 /**
@@ -12,7 +13,7 @@ import AppError from '../Utils/AppError';
  * 
  * @description gets all users
  */
-const getAllUsers = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+const getAllUsers = async (req:IAuthenticatedRequest,res:Response,next:NextFunction) : Promise<void> => {
     let doc = {};
     try {
       doc = await User.find();
@@ -35,11 +36,11 @@ const getAllUsers = async (req:Request,res:Response,next:NextFunction) : Promise
  * 
  * @description adds a new friend to user. 
  */
-const addFriend = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+const addFriend = async (req:IAuthenticatedRequest,res:Response,next:NextFunction) : Promise<void> => {
   let userDoc : any;
   let friendDoc : any;
   let friendId : ObjectId = req.body.friendId;
-  let userId : ObjectId = req.jwtPayload.id
+  let userId : ObjectId | undefined = req?.jwtPayload?.id
   let aliasFriendName : string = req.body.aliasName;
   try{
     friendDoc = await User.findById(friendId,"-friends -conversations")
@@ -60,7 +61,7 @@ const addFriend = async (req:Request,res:Response,next:NextFunction) : Promise<v
         message:"Friend added successfully.",
       })
     }
-  }catch(e){
+  }catch(e:any){
     return(next(new AppError(e.message,500)));
   }
 }
@@ -74,11 +75,11 @@ const addFriend = async (req:Request,res:Response,next:NextFunction) : Promise<v
  * 
  * @description removes a friend from user.
  */
-const removeFriend = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+const removeFriend = async (req:IAuthenticatedRequest,res:Response,next:NextFunction) : Promise<void> => {
   let userDoc : any;
   let friendDoc :any;
   let friendId : ObjectId = req.body.friendId;
-  let userId : ObjectId = req.jwtPayload.idp;
+  let userId : ObjectId | undefined= req?.jwtPayload?.id;
   try{
     friendDoc = await User.findById(friendId,"-friends -conversations")
     userDoc = await User.findById(userId)
@@ -96,12 +97,12 @@ const removeFriend = async (req:Request,res:Response,next:NextFunction) : Promis
         data: currentFriends
       })
     }
-  }catch(e){
+  }catch(e:any){
     return(next(new AppError(e.message,500)));
   }
 }
 
-const updateFriend = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+const updateFriend = async (req:IAuthenticatedRequest,res:Response,next:NextFunction) : Promise<void> => {
   //update friend for user.
 }
 

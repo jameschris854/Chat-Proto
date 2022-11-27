@@ -3,13 +3,14 @@ import Conversation from "../Model/conversationsModel"
 import Users from "../Model/userModel"
 import { NextFunction ,Response ,Request } from "express"
 import AppError from "../Utils/AppError"
+import {IAuthenticatedRequest } from "../types/ExpressTypes"
 
-const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise<void | Response> => {
+const sendMessage = async (req:IAuthenticatedRequest,res:Response,next:NextFunction) : Promise<void | Response> => {
 
     let {content,recipientNo,recipientEmail,type,conversationId} = req.body
 
     // check if conversation already exist.
-    const senderId = req.jwtPayload.id
+    const senderId = req?.jwtPayload?.id
 
     let recepientData 
 
