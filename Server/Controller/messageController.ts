@@ -2,12 +2,14 @@ import Message from "../Model/messageModel"
 import Conversation from "../Model/conversationsModel"
 import Users from "../Model/userModel"
 import { NextFunction ,Response ,Request } from "express"
+import AppError from "../Utils/AppError"
 
 const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise<void | Response> => {
 
-    let {content,senderId,recipientNo,recipientEmail,type,conversationId} = req.body
+    let {content,recipientNo,recipientEmail,type,conversationId} = req.body
 
     // check if conversation already exist.
+    const senderId = req.jwtPayload.id
 
     let recepientData 
 
@@ -16,7 +18,7 @@ const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise
     }else if(recipientEmail) {
         recepientData = {email: recipientEmail}
     } else if(!conversationId){
-        res.status(403).json({status:false,message:"recipient data to correct."})
+        return next(new AppError("recipient data to correct.", 403))
     }
 
     let getRecipient = await Users.findOne(recepientData)
@@ -26,7 +28,7 @@ const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise
     if(getRecipient){
         recipientIds = [getRecipient._id]
     }else{
-        res.status(404).json({status:true,message:"Recepient not found."})
+        return next(new AppError("Recepient not found.", 404))
     }
 
     if(!conversationId){
@@ -46,13 +48,13 @@ const sendMessage = async (req:Request,res:Response,next:NextFunction) : Promise
             conversationId
         })
     }else{
-        return res.status(422).json({status:false,message:"could not create conversation"})
+        return next(new AppError("could not create conversation", 422))
     }
 
     if(doc){
         res.status(200).json({status:true,message:"message sent successfully.",conversationId: conversationId})
     }else{
-        res.status(422).json({status:false,message:"could not send message"})
+        return next(new AppError("could not send message", 422))
     }
 }
 

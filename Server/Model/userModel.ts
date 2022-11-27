@@ -40,6 +40,11 @@ const schema = new mongoose.Schema(
         message: "passwords are not the same",
       },
     },
+    authToken: {
+      type: String,
+      required: false,
+      select:false
+    },
     passwordChangedAt: { type: Date },
     active: {
       type: Boolean,

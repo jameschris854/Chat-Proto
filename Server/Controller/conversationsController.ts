@@ -1,16 +1,21 @@
 import { NextFunction ,Request ,Response } from "express"
 import Conversations from "../Model/conversationsModel"
 import Message from "../Model/messageModel"
+import AppError from "../Utils/AppError"
 
+/**
+ * 
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns new AppError
+ * 
+ * @description gets all conversations of a user
+ */
 const getAllConversationsOfUser = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
-
-    const {userId} = req.params
-
-    console.log('get conv',req.params,userId)
-
+    const userId = req.jwtPayload.id
     try {
         let doc = await Conversations.find({userId}).populate("recentConversations", "_id content status type createdAt updatedAt")
-        console.log(doc)
         if(doc){
             res.status(200).json({
                 status:true,
@@ -18,20 +23,28 @@ const getAllConversationsOfUser = async (req:Request,res:Response,next:NextFunct
                 data: doc
             })
         }else{
-            res.status(404).json({status:false,message:"conversation not found"})
+            return next(new AppError("conversation not found", 404))
         }
     } catch (error) {
-        console.log(error)
-        next()
+        return next(new AppError(error.message, 500))
     }
 }
 
-const getConversationById = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
-    const {id} = req.params
-    console.log('get conv',req.params,id)
 
+/**
+ * 
+ * @param req 
+ * @param res 
+ * @param next 
+ * @returns new AppError
+ * 
+ * @description gets a conversation by conversation id.
+ */
+const getConversationById = async (req:Request,res:Response,next:NextFunction) : Promise<void> => {
+    const userId = req.jwtPayload.id
+    const {id} = req.params
     try {
-        const doc = await Message.find({conversationId:id}).sort({updatedAt:-1})
+        const doc = await Message.find({conversationId:id,members: {"$in": [userId]}}).sort({updatedAt:-1})
         if(doc){
             res.status(200).json({
                 status:true,
@@ -39,11 +52,10 @@ const getConversationById = async (req:Request,res:Response,next:NextFunction) :
                 data: doc
             })
         }else{
-            res.status(404).json({status:false,message:"conversation not found"})
+            return next(new AppError("conversation not found", 404))
         }
     } catch (error) {
-        console.log(error)
-        next()
+        return next(new AppError(error.message, 500))
     }
 }
 

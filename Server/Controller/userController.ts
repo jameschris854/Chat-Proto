@@ -23,7 +23,8 @@ const addFriend = async (req:Request,res:Response,next:NextFunction) : Promise<v
   let userDoc : any;
   let friendDoc : any;
   let friendId : ObjectId = req.body.friendId;
-  let userId : ObjectId = req.body.id;
+  let userId : ObjectId = req.jwtPayload.id
+
   let aliasFriendName : string = req.body.aliasName;
 
   try{
@@ -72,7 +73,7 @@ const removeFriend = async (req:Request,res:Response,next:NextFunction) : Promis
   let userDoc : any;
   let friendDoc :any;
   let friendId : ObjectId = req.body.friendId;
-  let userId : ObjectId = req.body.id;
+  let userId : ObjectId = req.jwtPayload.idp;
 
   try{
     

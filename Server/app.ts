@@ -5,6 +5,7 @@ import cors from "cors";
 const app : Application = express();
 import chatRouter from "./Routes/chatRouter";
 import accountsRouter from "./Routes/accountsRouter";
+import globalErrorHandler from "./Controller/errorController";
 
 app.use(express.static(`${__dirname}/public`));
 
@@ -22,5 +23,8 @@ app.all("*",(req:Request,res:Response,next:NextFunction) => {
   res.status(404).send('Sorry, cant find that')
   next()
 })
+
+// global error handler middleware.
+app.use(globalErrorHandler);
 
 export default app;
