@@ -8,7 +8,6 @@ import User from '../Model/userModel'
 import jwt from 'jsonwebtoken'
 import AppError from '../Utils/AppError';
 import IUserDoc from '../types/DBTypes';
-import IJwtPayload from '../types/IJwtPayload';
 
 /**
  * @param id 
@@ -95,7 +94,7 @@ const login = async (req:Request,res:Response,next:NextFunction) : Promise<void>
  * 
  * @description used to protect routes based on the supploed jwt token.
  */
-const protect = async (req:any,res:Response,next:NextFunction) => {
+const protect = async (req:any,res:any,next:any ) => {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];

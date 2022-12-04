@@ -1,4 +1,4 @@
-import { NextFunction ,Request ,Response } from "express"
+import { NextFunction ,Response } from "express"
 import Conversations from "../Model/conversationsModel"
 import Message from "../Model/messageModel"
 import { IAuthenticatedRequest } from "../types/ExpressTypes"

@@ -1,4 +1,15 @@
-import { ObjectId } from "mongoose";
+import { Date,ObjectId } from "mongoose";
+
+export interface IUserFriends {
+    _id: ObjectId
+    name: string
+    mobileNo: number
+    email: string
+    lastSeen: Date
+    createdAt: Date
+    updatedAt: Date,
+    __v: 0
+}
 
 export default interface IUserDoc {
     id:ObjectId;
@@ -6,7 +17,7 @@ export default interface IUserDoc {
     email: string;
     password: string;
     name: string;
-    friends: any[];
+    friends: Array<IUserFriends>;
     lastSeen: any;
     passwordConfirm: string;
     active: boolean;
