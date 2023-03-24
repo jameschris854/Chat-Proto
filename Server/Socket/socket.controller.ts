@@ -19,13 +19,13 @@ export const sendMessageInConversation = async (socket:any,body:any) => {
         // check if conversation already exist.
         const senderId = socket.handshake?.jwtPayload?.id
         const conversation = await getConversationById(conversationId)
-        const getRecipientId = conversation.members.find((id:any) => !(id == senderId) )
-        const getRecipient:any = await getUserById(getRecipientId)
-    
         if(!conversationId && !recipientId){
             return new AppError("recipient data to correct.", 403)
         }
-        
+
+        const getRecipientId = conversation?.members?.find((id:any) => !(id == senderId) )
+        const getRecipient:any = await getUserById(getRecipientId)
+    
         let recipientIds = []
 
         if(getRecipient){
@@ -38,7 +38,7 @@ export const sendMessageInConversation = async (socket:any,body:any) => {
 
         // create new conversation between two users if not available
         if(!conversationId){
-            const id = createConversation(senderId,recipientIds)
+            const id = await createConversation(senderId,recipientIds)
             if(id){
                 conversationId = id
             }

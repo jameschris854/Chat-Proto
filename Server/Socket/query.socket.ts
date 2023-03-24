@@ -32,7 +32,7 @@ const NotifyOnline = (members:SocketMembers,socket:AuthorizedSocket,userState:"O
  const queryConversationsByUser = async (req:AuthorizedHandShake) : Promise<any> => {
     const userId = req?.jwtPayload?.id
     try {
-        return await Conversations.find({userId}).populate("recentConversations", "_id content status type createdAt updatedAt")
+        return await Conversations.find({userId}).populate("recentConversations", "_id content status type createdAt updatedAt").populate("members")
     } catch (e:any) {
         return e
     }

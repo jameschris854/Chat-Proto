@@ -22,7 +22,7 @@ io.on("connection", (socket) => {
 
 
 io.of("/v1/chat").use((socket, next) => {
-  console.log("socket service started successfully",socket)
+  console.log("socket service started successfully")
   authController.protect(socket.handshake,undefined,next)
 });
 

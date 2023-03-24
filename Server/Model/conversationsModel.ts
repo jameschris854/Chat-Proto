@@ -3,12 +3,11 @@ import mongoose from 'mongoose';
 const { SchemaTypes } = mongoose
 
 const conversationsSchema = new mongoose.Schema({
-    members: {
-        type: SchemaTypes.Array, default: [{
-            type: SchemaTypes.ObjectId,
-            required: true
-        }]
-    },
+    members:[{
+        type: SchemaTypes.ObjectId,
+        required: true,
+        ref: 'User'
+    }],
     createdBy: {
         type: SchemaTypes.ObjectId,
         required: false
@@ -25,7 +24,7 @@ conversationsSchema.virtual('recentConversations', {
     ref:'Message',
     localField:'_id',
     foreignField:'conversationId'
-  });
+});
   
 const model : any = mongoose.model
 const conversions = new model("Conversations", conversationsSchema, "conversations");
