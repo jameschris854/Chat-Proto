@@ -6,6 +6,7 @@ import AppError from "../Utils/AppError"
 import Message from "../Model/messageModel"
 import IUserDoc from "../types/DBTypes"
 import { io } from '../socket';
+import { createConversation } from '../Service/ConversationService';
 
 
 /**
@@ -100,6 +101,59 @@ const sendMessage = async (req:AuthorizedHandShake,body:Body,callback: Function)
         return callback(doc)
     }else{
         return new AppError("could not send message", 422)
+    }
+}
+
+/**
+ * 
+ * @param req [AuthorizedHandShake]
+ * @param body [Body]
+ * @param callback [Function]
+ * @returns returns message document created by mongo
+ */
+const startConversation = async (req:AuthorizedHandShake,body:Body,callback: Function) : Promise< Function | AppError > => {
+
+    let {content,recipientEmail,type} = body
+
+    // check if conversation already exist.
+    const senderId = req?.jwtPayload?.id
+
+    let recepientData 
+
+    if(recipientEmail) {
+        recepientData = {email: recipientEmail}
+    }
+
+    let getRecipient = await Users.findOne(recepientData)
+
+    let recipientIds : any[] = []
+
+    if(getRecipient){
+        recipientIds = [getRecipient._id]
+    }else{
+        return new AppError("Recepient not found.", 404)
+    }
+
+    let doc = await createConversation(senderId,recipientIds)
+  
+    if(doc){
+        console.log('if doc',doc)
+        let conversationId = doc.id
+        if(conversationId){
+            doc = await Message.create({
+                content,
+                status: "SENT",
+                sender: senderId,
+                recipients: [...recipientIds],
+                type: type,
+                conversationId
+            })
+        }else{
+            return new AppError("could not create conversation", 422)
+        }
+        return callback(doc)
+    }else{
+        return new AppError("could not create conversation", 422)
     }
 }
 

@@ -1,6 +1,7 @@
 import IUserDoc from "../types/DBTypes";
 import { AuthorizedSocket, SocketMembers } from '../types/Socket';
 import querySocket from "./query.socket";
+import { joinConversation, sendMessageInConversation, startNewConversation } from "./socket.controller";
 
 // all online socket members
 let members : SocketMembers = {}
@@ -32,6 +33,13 @@ const chatNameSpaceHandler = async (socket:AuthorizedSocket) => {
         socket.on("SEND_MESSAGE",(arg) => querySocket.sendMessage(socket.handshake,arg,(message:any) => {
           socket.emit("RECIEVE_MESSAGE",message)
         }));
+
+
+        //Personal Chat events
+        socket.on("START_CONVERSATION",(body) => startNewConversation(socket,body))
+        socket.on("JOIN_CONVERSATION",(body) => joinConversation(socket,body))
+        socket.on("SEND_PERSONAL_MESSAGE",(body) => sendMessageInConversation(socket,body))
+        socket.on("LEAVE_CONVERSATION",(body) => joinConversation(socket,body))
         
         // handle user disconnect
         socket.on("disconnect",() => {

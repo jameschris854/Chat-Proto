@@ -11,9 +11,13 @@ const port = process.env.port || Config.PORT
 
 const io = new Server(server,{
     cors:{
-        origin:`http://localhost:${port}`,
-        methods:["GET","POST"]
+      origin:`http://localhost:10000`,
+      methods:["GET","POST"]
     }
+})
+
+io.on("connection", (socket) => {
+  console.log("socket started successfully",socket)
 });
 
 
