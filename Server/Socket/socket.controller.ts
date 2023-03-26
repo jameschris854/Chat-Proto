@@ -1,13 +1,36 @@
+import { ObjectId } from 'mongoose';
 import { Socket } from "socket.io"
 import { createConversation, getConversationById } from "../Service/ConversationService"
 import { createMessage } from "../Service/MessageService"
 import { getUserById } from "../Service/UserService"
 import { io } from "../socket"
 import AppError from "../Utils/AppError"
+import querySocket from "./query.socket"
 
 export const joinConversation = (socket:Socket,body:any) => {
     let {conversationId} = body
     socket.join(conversationId)
+}
+
+export const updateMessageStatus = async (socket:Socket,body:any) => {
+
+    let {messageId,status} = body
+
+    if(!messageId || !status){
+        return;
+    }
+
+    const doc: any = await querySocket.findMessageById(messageId)
+    const sender : ObjectId = doc.sender
+    console.log('uf cibd',sender.toString(),socket.handshake?.jwtPayload?.id)
+    if(doc && sender.toString() === socket.handshake?.jwtPayload?.id){
+        const updatedDoc:any = await querySocket.findMessageAndUpdateStatus(messageId,status)
+        console.log('updatedDoc',updatedDoc)
+        if(updatedDoc){
+            console.log('update message',updatedDoc)
+            io.of("/v1/chat").to(updatedDoc.conversationId.toString()).emit("MESSAGE_UPDATES",updatedDoc)
+        }
+    }
 }
 
 export const sendMessageInConversation = async (socket:any,body:any) => {
